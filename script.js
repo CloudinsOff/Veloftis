@@ -33,7 +33,7 @@ function createNewTab() {
         <div class="search-home" id="home-${tabId}">
             <div class="logo">Veloftis</div>
             <div class="search-box">
-                <input type="text" class="search-input" id="search-in-${tabId}" placeholder="Поиск в сети или адрес сайта..." onkeydown="if(event.key === 'Enter') tabSearch('${tabId}')">
+                <input type="text" class="search-input" id="search-in-${tabId}" placeholder="Поиск в сети..." onkeydown="if(event.key === 'Enter') tabSearch('${tabId}')">
                 <button class="search-btn" onclick="tabSearch('${tabId}')">Найти</button>
             </div>
         </div>
@@ -108,6 +108,7 @@ function loadUrl(input) {
     }
 }
 
+// НАДЕЖНЫЙ ОБРАБОТЧИК ПОИСКА ДЛЯ GITHUB PAGES
 function processInput(input, tabId, isNavigating = false) {
     if (!input) return;
 
@@ -116,7 +117,8 @@ function processInput(input, tabId, isNavigating = false) {
     const frame = document.getElementById(`frame-${tabId}`);
     const tabButton = document.getElementById(`btn-${tabId}`);
 
-    let targetUrl = 'https://google.com' + encodeURIComponent(text) + '&igu=1';
+    // Используем защищенную HTML-версию DuckDuckGo, которая идеально работает на GitHub Pages
+    let targetUrl = 'https://duckduckgo.com' + encodeURIComponent(text);
 
     if (!isNavigating) {
         const hist = tabHistory[tabId];
