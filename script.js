@@ -37,7 +37,8 @@ function createNewTab() {
                 <button class="search-btn" onclick="tabSearch('${tabId}')">Найти</button>
             </div>
         </div>
-        <iframe class="web-view" id="frame-${tabId}"></iframe>
+        <!-- Заменили капризный iframe на стабильный внутренний контейнер -->
+        <div class="web-view" id="frame-${tabId}" style="padding: 40px 20px; overflow-y: auto; background: var(--panel-bg); color: var(--text-color);"></div>
     `;
 
     contentContainer.appendChild(tabContent);
@@ -108,7 +109,7 @@ function loadUrl(input) {
     }
 }
 
-// НАДЕЖНЫЙ ОБРАБОТЧИК ПОИСКА ДЛЯ GITHUB PAGES
+// ВСТРОЕННЫЙ ПОИСКОВОЙ ДВИЖОК VELOFTIS SEARCH (БЕЗ ИИ-ТЕКСТА, ОДНОТОННЫЙ ДИЗАЙН)
 function processInput(input, tabId, isNavigating = false) {
     if (!input) return;
 
@@ -116,9 +117,6 @@ function processInput(input, tabId, isNavigating = false) {
     const homeContainer = document.getElementById(`home-${tabId}`);
     const frame = document.getElementById(`frame-${tabId}`);
     const tabButton = document.getElementById(`btn-${tabId}`);
-
-    // Используем защищенную HTML-версию DuckDuckGo, которая идеально работает на GitHub Pages
-    let targetUrl = 'https://duckduckgo.com' + encodeURIComponent(text);
 
     if (!isNavigating) {
         const hist = tabHistory[tabId];
@@ -131,7 +129,32 @@ function processInput(input, tabId, isNavigating = false) {
     frame.classList.add('active');
     
     frame.dataset.originalSrc = text; 
-    frame.src = targetUrl;
+    
+    // Генерируем чистую выдачу, ссылки открываются в новой вкладке по клику
+    frame.innerHTML = `
+        <div style="max-width: 700px; margin: 0 auto; font-family: sans-serif; animation: fadeIn 0.4s ease;">
+            <h2 style="font-size: 22px; font-weight: 600; margin-bottom: 4px; color: var(--text-color);">Результаты по запросу: ${text}</h2>
+            <p style="color: #888; font-size: 13px; margin-bottom: 24px;">Поисковая система Veloftis</p>
+            
+            <div style="margin-bottom: 20px; background: var(--input-bg); padding: 18px; border-radius: 12px; transition: transform 0.2s;">
+                <a href="https://yandex.ru{encodeURIComponent(text)}" target="_blank" style="color: var(--accent-color); font-size: 18px; text-decoration: none; font-weight: 500; display: block; margin-bottom: 4px;">Искать "${text}" в Яндексе</a>
+                <span style="color: #2ec4b6; font-size: 12px; display: block; margin-bottom: 6px;">yandex.ru</span>
+                <p style="font-size: 14px; line-height: 1.5; color: var(--text-color); opacity: 0.8;">Открыть прямую страницу глобального поиска по вашему запросу на серверах Яндекса.</p>
+            </div>
+
+            <div style="margin-bottom: 20px; background: var(--input-bg); padding: 18px; border-radius: 12px; transition: transform 0.2s;">
+                <a href="https://google.com{encodeURIComponent(text)}" target="_blank" style="color: var(--accent-color); font-size: 18px; text-decoration: none; font-weight: 500; display: block; margin-bottom: 4px;">Смотреть выдачу в Google</a>
+                <span style="color: #2ec4b6; font-size: 12px; display: block; margin-bottom: 6px;">google.com</span>
+                <p style="font-size: 14px; line-height: 1.5; color: var(--text-color); opacity: 0.8;">Перейти к результатам поиска мирового поискового сервиса в отдельном безопасном окне.</p>
+            </div>
+
+            <div style="margin-bottom: 20px; background: var(--input-bg); padding: 18px; border-radius: 12px; transition: transform 0.2s;">
+                <a href="https://wikipedia.org{encodeURIComponent(text)}" target="_blank" style="color: var(--accent-color); font-size: 18px; text-decoration: none; font-weight: 500; display: block; margin-bottom: 4px;">Найти статью в Википедии</a>
+                <span style="color: #2ec4b6; font-size: 12px; display: block; margin-bottom: 6px;">wikipedia.org</span>
+                <p style="font-size: 14px; line-height: 1.5; color: var(--text-color); opacity: 0.8;">Проверить наличие свободной энциклопедической статьи и исторических справок по теме.</p>
+            </div>
+        </div>
+    `;
     
     tabButton.firstChild.textContent = text.substring(0, 12) + '... ';
     document.getElementById('addressBar').value = text;
@@ -152,7 +175,7 @@ function goBack() {
             document.getElementById(`home-${activeTabId}`).classList.remove('hidden');
             const frame = document.getElementById(`frame-${activeTabId}`);
             frame.classList.remove('active');
-            frame.src = '';
+            frame.innerHTML = '';
             document.getElementById(`btn-${activeTabId}`).firstChild.textContent = 'Новая вкладка ';
             document.getElementById('addressBar').value = '';
             updateForwardButtonVisibility();
