@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veloftis Browser</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Панель вкладок -->
+    <div class="tabs-bar" id="tabsBar">
+        <button class="add-tab-btn" onclick="createNewTab()">+</button>
+    </div>
+
+    <!-- Навигационная панель управления -->
+    <div class="nav-bar">
+        <div class="nav-arrows">
+            <button class="nav-btn" onclick="goBack()" title="Назад">↩</button>
+            <button class="nav-btn hidden-arrow" id="forwardBtn" onclick="goForward()" title="Вперед">↪</button>
+        </div>
+        <input type="text" class="address-bar" id="addressBar" placeholder="Введите адрес сайта или поисковый запрос..." onkeydown="if(event.key === 'Enter') loadUrl(this.value)">
+        <button class="incognito-toggle" id="incognitoBtn" onclick="toggleIncognito()">Инкогнито</button>
+        <button class="theme-toggle" onclick="toggleTheme()">Тема</button>
+    </div>
+
+    <!-- Контентная область -->
+    <div class="browser-content" id="browserContent">
+        <!-- Вкладки создаются здесь через script.js -->
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
